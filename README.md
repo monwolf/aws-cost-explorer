@@ -26,7 +26,7 @@ python aws-cost-and-usage-report.py
 
 ### Usage
 
-By default the report will query the cloud for cost of the current month, which is equivalent with running it with **--month 1** option.
+By default the script will query the cloud for cost of the current month, which is equivalent with running it with **--month 1** option.
 
 Tool's help options are the following.
 

@@ -47,3 +47,28 @@ optional arguments:
   --disable-total  Do not output total cost per day, or month unit.
 
 ```
+
+### Output
+
+The output is dumped into a **CSV** file which you can specify by **--output** option by path.
+
+Example of an output for costs of current month could looks like the following, where the account id hidden by **XXXXXXXXXXXX**:
+```
+Time Period,Linked Account,Service,Amount,Unit,Estimated
+09/2018,XXXXXXXXXXXX,AWS Cost Explorer,0.28,USD,True
+09/2018,XXXXXXXXXXXX,AWS Key Management Service,0.5888888936,USD,True
+09/2018,XXXXXXXXXXXX,Amazon Cognito,0,USD,True
+09/2018,XXXXXXXXXXXX,Amazon DynamoDB,0,USD,True
+09/2018,XXXXXXXXXXXX,Amazon EC2 Container Registry (ECR),0.0039653208,USD,True
+09/2018,XXXXXXXXXXXX,EC2 - Other,1.6374118119,USD,True
+09/2018,XXXXXXXXXXXX,Amazon Elastic Compute Cloud - Compute,0.0880057458,USD,True
+09/2018,XXXXXXXXXXXX,Amazon Glacier,0.0000000011,USD,True
+09/2018,XXXXXXXXXXXX,Amazon Route 53,0.501348,USD,True
+09/2018,XXXXXXXXXXXX,Amazon Simple Notification Service,0,USD,True
+09/2018,XXXXXXXXXXXX,Amazon Simple Storage Service,1.0107627425,USD,True
+09/2018,XXXXXXXXXXXX,Amazon Virtual Private Cloud,0.2,USD,True
+09/2018,XXXXXXXXXXXX,AmazonCloudWatch,1.3259258281,USD,True
+09/2018,XXXXXXXXXXXX,Tax,1.07,USD,True
+Total Cost: 6.706308343800001,,,,,
+
+```

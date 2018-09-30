@@ -8,21 +8,27 @@ with used services.
 
 ### Prerequisites
 
-You must run the tool with **python3** and **boto3** installed. To install boto3 just run ``` pip3 install boto3 ```.
+You must run the tool with **python3** and [AWS SDK for Python ](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html) installed. To install the SDK you must run ``` pip3 install boto3 ```.
 
-It's recommented to use virtualenv though:
+Your AWS account credentials must be setup in **$HOME/.aws/credentials** file.
+
+
+It's recommented to use virtualenv though. As guide, take a look into the following
+command line example:
 
 ```
 python3 -v venv venv3
 source venv3/bin/activate
 pip install boto3
 
-python aws-cost-and-useage-report
+python aws-cost-and-usage-report.py
 ```
 
 ### Usage
 
-Tool's help options are the following:
+By default the report will query the cloud for cost of the current month, which is equivalent with running it with **--month 1** option.
+
+Tool's help options are the following.
 
 ```
 python aws-cost-and-usage-report.py  -h

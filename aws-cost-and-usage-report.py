@@ -92,6 +92,9 @@ def main():
                 total_cost += float(amount)
             if enable_total:
                 out_fd.write("Total Cost: %s,,,,,\n" % str(total_cost))
+    if output_fpath != DEFAULT_OUTPUT_FILE:
+        output_fpath = os.path.abspath(output_fpath)
+    print("Output written to: %s" % output_fpath)
 
 
 if __name__ == "__main__":

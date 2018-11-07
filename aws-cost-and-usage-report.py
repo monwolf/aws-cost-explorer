@@ -8,10 +8,8 @@ import sys
 
 import boto3
 
-
 OUTPUT_FILE_NAME = "report.csv"
 DEFAULT_OUTPUT_FILE = os.path.join(os.path.abspath(os.path.curdir), OUTPUT_FILE_NAME)
-
 
 def process_arguments(parser):
     args = parser.parse_args()

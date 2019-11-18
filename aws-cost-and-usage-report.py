@@ -10,10 +10,11 @@ import boto3
 
 DATETIME_NOW = datetime.datetime.utcnow()
 
-AWS_REGION = "us-east-1"
+# AWS_REGION = "us-east-1"
 AWS_COST_EXPLORER_SERVICE_KEY = "ce"
 
 OUTPUT_FILE_NAME = "report.csv"
+DEFAULT_PROFILE_NAME = "default"
 OUTPUT_FILE_HEADER_LINE = ",".join(
     ["Time Period", "Linked Account", "Service", "Amount",
      "Unit", "Estimated", "\n"])
@@ -28,8 +29,9 @@ COST_EXPLORER_GROUP_BY = [
 
 
 def main():
-    cost_explorer = boto3.client(AWS_COST_EXPLORER_SERVICE_KEY, AWS_REGION)
-    daily, monthly, enable_total, output_file = process_args(create_parser())
+    daily, monthly, enable_total, output_file, profile_name = process_args(create_parser())
+    session = boto3.Session(profile_name=profile_name)
+    cost_explorer = session.client(AWS_COST_EXPLORER_SERVICE_KEY)
     granularity = COST_EXPLORER_GRANULARITY_MONTHLY
     if daily:
         granularity = COST_EXPLORER_GRANULARITY_DAILY
@@ -56,7 +58,8 @@ def process_args(parser):
         days, months = 0, 1
     output_fpath = args.fpath
     enable_total = not args.disable_total
-    return days, months, enable_total, output_fpath
+    profile_name = args.profile_name
+    return days, months, enable_total, output_fpath, profile_name
 
 
 def create_parser():
@@ -67,6 +70,11 @@ def create_parser():
         dest="fpath",
         default=DEFAULT_OUTPUT_FILE_PATH,
         help="output file path (default:%s)" % OUTPUT_FILE_NAME)
+    parser.add_argument(
+        "--profile-name",
+        dest="profile_name",
+        default=DEFAULT_PROFILE_NAME,
+        help="Profile name on your AWS account (default:%s)" % DEFAULT_PROFILE_NAME)
     parser.add_argument(
         "--days",
         type=int,
@@ -92,7 +100,7 @@ def create_parser():
 def get_cost_and_usage(cost_explorer, granularity, days, months):
     time_period = {
         "Start": get_cost_start_period(days, months),
-        "End":  DATETIME_NOW.strftime("%Y-%m-%d")}
+        "End": DATETIME_NOW.strftime("%Y-%m-%d")}
     token = None
     result = []
     while True:
@@ -100,10 +108,10 @@ def get_cost_and_usage(cost_explorer, granularity, days, months):
         if token:
             kwargs = {"NextPageToken": token}
         data = cost_explorer.get_cost_and_usage(
-                TimePeriod=time_period,
-                Granularity=granularity,
-                Metrics=["UnblendedCost"],
-                GroupBy=COST_EXPLORER_GROUP_BY, **kwargs)
+            TimePeriod=time_period,
+            Granularity=granularity,
+            Metrics=["UnblendedCost"],
+            GroupBy=COST_EXPLORER_GROUP_BY, **kwargs)
         result += data["ResultsByTime"]
         token = data.get("NextPageToken", None)
         if not token:
@@ -112,11 +120,12 @@ def get_cost_and_usage(cost_explorer, granularity, days, months):
 
 
 def get_cost_start_period(days, months):
+    start_strftime = None
     if months:
         if months == 1:
             start_strftime = DATETIME_NOW.strftime("%Y-%m-01")
         else:
-            prev_month = DATETIME_NOW - dateutil.relativedelta(months=months-1)
+            prev_month = DATETIME_NOW - dateutil.relativedelta(months=months - 1)
             start_strftime = prev_month.strftime("%Y-%m-01")
     if days:
         prev_day = DATETIME_NOW - datetime.timedelta(days=days)

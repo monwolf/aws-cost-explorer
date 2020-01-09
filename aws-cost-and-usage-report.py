@@ -7,12 +7,10 @@ import os
 import sys
 
 import boto3
+import botocore.exceptions
 
 DATETIME_NOW = datetime.datetime.utcnow()
-
-# AWS_REGION = "us-east-1"
 AWS_COST_EXPLORER_SERVICE_KEY = "ce"
-
 OUTPUT_FILE_NAME = "report.csv"
 DEFAULT_PROFILE_NAME = "default"
 OUTPUT_FILE_HEADER_LINE = ",".join(
@@ -20,7 +18,6 @@ OUTPUT_FILE_HEADER_LINE = ",".join(
      "Unit", "Estimated", "\n"])
 CURRENT_FOLDER_PATH = os.path.abspath(os.path.curdir)
 DEFAULT_OUTPUT_FILE_PATH = os.path.join(CURRENT_FOLDER_PATH, OUTPUT_FILE_NAME)
-
 COST_EXPLORER_GRANULARITY_MONTHLY = "MONTHLY"
 COST_EXPLORER_GRANULARITY_DAILY = "DAILY"
 COST_EXPLORER_GROUP_BY = [
@@ -29,8 +26,13 @@ COST_EXPLORER_GROUP_BY = [
 
 
 def main():
-    daily, monthly, enable_total, output_file, profile_name = process_args(create_parser())
-    session = boto3.Session(profile_name=profile_name)
+    daily, monthly, enable_total, output_file, profile_name = process_args(
+        create_parser())
+    try:
+        session = boto3.Session(profile_name=profile_name)
+    except botocore.exceptions.ProfileNotFound as exp:
+        print("Error: %s" % str(exp))
+        sys.exit(1)
     cost_explorer = session.client(AWS_COST_EXPLORER_SERVICE_KEY)
     granularity = COST_EXPLORER_GRANULARITY_MONTHLY
     if daily:
@@ -74,7 +76,8 @@ def create_parser():
         "--profile-name",
         dest="profile_name",
         default=DEFAULT_PROFILE_NAME,
-        help="Profile name on your AWS account (default:%s)" % DEFAULT_PROFILE_NAME)
+        help="Profile name on your AWS account (default:%s)" %
+        DEFAULT_PROFILE_NAME)
     parser.add_argument(
         "--days",
         type=int,

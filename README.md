@@ -31,21 +31,23 @@ By default the script will query the cloud for cost of the current month, which 
 Tool's help options are the following.
 
 ```
-python aws-cost-and-usage-report.py  -h
-usage: aws-cost-and-usage-report.py [-h] [--output FPATH] [--days DAYS]
-                                    [--months MONTHS] [--disable-total]
+usage: aws-cost-and-usage-report.py [-h] [--output FPATH]
+                                    [--profile-name PROFILE_NAME]
+                                    [--days DAYS] [--months MONTHS]
+                                    [--disable-total]
 
 AWS Simple Cost and Usage Report
 
 optional arguments:
-  -h, --help       show this help message and exit
-  --output FPATH   output file path (default:report.csv)
-  --days DAYS      get data for daily usage and cost by given days. (Mutualy
-                   exclusive with 'months' option, default: 0)
-  --months MONTHS  get data for monthly usage and cost by given months.
-                   (Mutualy exclusive with 'days' option, default: 1)
-  --disable-total  Do not output total cost per day, or month unit.
-
+  -h, --help            show this help message and exit
+  --output FPATH        output file path (default:report.csv)
+  --profile-name PROFILE_NAME
+                        Profile name on your AWS account (default:default)
+  --days DAYS           get data for daily usage and cost by given days.
+                        (Mutualy exclusive with 'months' option, default: 0)
+  --months MONTHS       get data for monthly usage and cost by given months.
+                        (Mutualy exclusive with 'days' option, default: 1)
+  --disable-total       Do not output total cost per day, or month unit.
 ```
 
 ### Output

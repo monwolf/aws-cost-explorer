@@ -29,7 +29,10 @@ def main():
     daily, monthly, enable_total, output_file, profile_name = process_args(
         create_parser())
     try:
-        session = boto3.Session(profile_name=profile_name)
+        if profile_name == DEFAULT_PROFILE_NAME :
+            session = boto3.Session()
+        else:
+            session = boto3.Session(profile_name=profile_name)
     except botocore.exceptions.ProfileNotFound as exp:
         print("Error: %s" % str(exp))
         sys.exit(1)
@@ -75,7 +78,7 @@ def create_parser():
     parser.add_argument(
         "--profile-name",
         dest="profile_name",
-        default=DEFAULT_PROFILE_NAME,
+        default="default",
         help="Profile name on your AWS account (default:%s)" %
         DEFAULT_PROFILE_NAME)
     parser.add_argument(
